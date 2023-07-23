@@ -3,5 +3,5 @@ from women.views import index, about
 
 urlpatterns = [
     path('index/', index),
-    path('about/', about)
+    path('about/', about),
 ]
