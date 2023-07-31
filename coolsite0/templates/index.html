@@ -2,14 +2,12 @@
 
 {% block content %}
 <ul class="list-articles">
-  {% for p in posts %}
-      <li><h2>{{p.title}}</h2>
-  {% autoescape on %}
-  {{p.content|linebreaks|truncatewords:50}}
-  {% endautoescape %}
-      <div class="clear"></div>
-      <p class="link-read-post"><a href="#">Читать пост</a></p>
-      </li>
-  {% endfor %}
+    {% for p in posts %}
+        <li><h2>{{p.title}}</h2>
+            {{p.content|truncatewords:30}}
+        <div class="clear"></div>
+        <p class="link-read-post"><a href="#">Читать пост</a></p>
+        </li>
+    {% endfor %}
 </ul>
 {% endblock %}
