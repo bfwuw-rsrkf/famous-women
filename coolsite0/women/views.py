@@ -1,7 +1,6 @@
 from django.shortcuts import render
-from women.models import Woman
-# from random import choice
-# from django.http import HttpResponse
+from women.models import Woman, Category
+from django.http import Http404
 
 
 # CRUD request - create, retrieve, update, delete
@@ -14,39 +13,17 @@ from women.models import Woman
 menu = ["О сайте", "Добавить статью", "Обратная связь", "Войти"]
 
 
-# def index(request):
-#     data = {"header": "Hello, Django!", "message": "Welcome to Python."}
-#     return render(request, "index.html", context=data)
-
-
-# def index(request):
-#     header = "Данные пользователя"  # обычная переменная
-#     langs = ["Python", "Java", "C#"]  # список
-#     user = {"name": "Tom", "age": 23}  # словарь
-#     address = ("Абрикосовая", 23, 45)  # кортеж
-#
-#     data = {"header": header, "langs": langs, "user": user, "address": address}
-#     return render(request, "index.html", context=data)
-
-
 def index(request):
     posts = Woman.objects.filter(is_published=True)
-    data = {'menu': menu, 'title': 'Главная страница', 'posts': posts}
+    cats = Category.objects.all()
+    data = {
+        'menu': menu,
+        'title': 'Главная страница',
+        'posts': posts,
+        'cats': cats,
+        'cat_selected': 0,
+    }
     return render(request, 'index.html', data)
-
-
-# def about(request):
-#     return render(request, "about.html")
-
-
-# def about(request):
-#     header = "About me"
-#     user = ["Shulamita", "Sakura", "Naruto", "Hurem", "Hinata", "Erzhan", "Aicholpon", "Killua"]
-#     langs = ["English", "Russian", "Spanish", "French", "Chinese"]
-#     address = ("Ottawa", "Ankara", "Madrid", "Konoha", "Rome", "Paris", "Amsterdam")
-#
-#     data = {"header": header, "user": choice(user), "langs": langs, "address": choice(address)}
-#     return render(request, "about.html", context=data)
 
 
 def about(request):
@@ -54,9 +31,16 @@ def about(request):
     return render(request, 'index.html', data)
 
 
-# def categories(request, cats_id):
-#     return HttpResponse(f"<h1>Статьи по категориям</h1> {cats_id}")
-
-
-# def name_woman(request, name):
-#     return HttpResponse(f"<h1>Женщину зовут {name}.</h1>")
+def show_category(request, cat_id):
+    posts = Woman.objects.filter(cat_id=cat_id)
+    cats = Category.objects.all()
+    if len(posts) == 0:
+        raise Http404()
+    context = {
+        'posts': posts,
+        'cats': cats,
+        'menu': menu,
+        'title': 'Отображение по рубрикам',
+        'cat_selected': cat_id,
+    }
+    return render(request, 'index.html', context=context)
