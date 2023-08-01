@@ -1,9 +1,8 @@
 from django.urls import path
-from women.views import index, about  # , categories, name_woman
+from women.views import index, about, show_category
 
 urlpatterns = [
-    path('index/', index),
+    path('index/', index, name='index'),
     path('about/', about),
-    # path('cats/<int:cats_id>/', categories),
-    # path('name/<str:name>/', name_woman)
+    path('category/<int:cat_id>/', show_category, name='category'),
 ]
