@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from women.models import Woman, Category
+from django.shortcuts import render, get_object_or_404
+from women.models import *
 
 
 # CRUD request - create, retrieve, update, delete
@@ -15,8 +15,8 @@ menu = ["О сайте", "Добавить статью", "Обратная св
 def index(request):
     posts = Woman.objects.filter(is_published=True)
     data = {
-        'menu': menu,
         'title': 'Главная страница',
+        'menu': menu,
         'posts': posts,
         'cat_selected': 0,
     }
@@ -31,9 +31,20 @@ def about(request):
 def show_category(request, cat_id):
     posts = Woman.objects.filter(cat_id=cat_id)
     context = {
-        'posts': posts,
-        'menu': menu,
         'title': 'Отображение по рубрикам',
+        'menu': menu,
+        'posts': posts,
         'cat_selected': cat_id,
     }
     return render(request, 'index.html', context=context)
+
+
+def show_post(request, post_slug):
+    post = get_object_or_404(Woman, slug=post_slug)
+    context = {
+        "title": 'Главная страница',
+        "menu": menu,
+        "post": post,
+        "cat_selected": post.cat_id,
+    }
+    return render(request, "post.html", context=context)
