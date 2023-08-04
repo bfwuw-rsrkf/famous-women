@@ -1,5 +1,5 @@
 from django.contrib import admin
-from women.models import Woman, Category
+from .models import Woman, Category
 
 
 class WomanAdmin(admin.ModelAdmin):
