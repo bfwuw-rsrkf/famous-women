@@ -1,5 +1,7 @@
-from django.shortcuts import render, get_object_or_404
-from women.models import *
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse
+from women.models import Woman, Category
+from women.forms import AddPostForm
 
 
 # CRUD request - create, retrieve, update, delete
@@ -9,7 +11,12 @@ from women.models import *
 # Delete - delete запрос
 
 
-menu = ["О сайте", "Добавить статью", "Обратная связь", "Войти"]
+menu = [
+    {'title': "О сайте", 'url_name': 'about'},
+    {'title': "Добавить статью", 'url_name': 'add_page'},
+    {'title': "Обратная связь", 'url_name': 'contact'},
+    {'title': "Войти", 'url_name': 'login'},
+]
 
 
 def index(request):
@@ -29,7 +36,7 @@ def about(request):
 
 
 def show_category(request, cat_id):
-    posts = Woman.objects.filter(cat_id=cat_id)
+    posts = Woman.objects.filter(cat_id=cat_id, is_published=True)
     context = {
         'title': 'Отображение по рубрикам',
         'menu': menu,
@@ -48,3 +55,23 @@ def show_post(request, post_slug):
         "cat_selected": post.cat_id,
     }
     return render(request, "post.html", context=context)
+
+
+def add_page(request):
+    if request.method == 'POST':
+        form = AddPostForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = AddPostForm()
+    context = {'form': form, 'menu': menu, 'title': 'Добавление статьи'}
+    return render(request, 'add_page.html', context=context)
+
+
+def contact(request):
+    return HttpResponse('Обратная связь')
+
+
+def login(request):
+    return HttpResponse('Войти')
