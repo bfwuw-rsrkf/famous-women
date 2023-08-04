@@ -1,5 +1,5 @@
 from django import forms
-from women.models import Category, Woman
+from .models import Woman
 
 
 # class AddPostForm(forms.Form):
