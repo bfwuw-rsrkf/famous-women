@@ -23,7 +23,7 @@ menu = [
 ]
 
 
-class HomePageListView(LoginRequiredMixin, DataMixin, ListView):
+class HomePageListView(DataMixin, ListView):
     model = Woman
     template_name = 'index.html'
     context_object_name = 'posts'
@@ -71,7 +71,7 @@ class ShowPostDetailView(DataMixin, DetailView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-class AddPageCreateView(DataMixin, CreateView):
+class AddPageCreateView(LoginRequiredMixin, DataMixin, CreateView):
     form_class = AddPostForm
     template_name = 'add_page.html'
     success_url = reverse_lazy('index')
