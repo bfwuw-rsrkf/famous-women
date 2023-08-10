@@ -9,5 +9,6 @@ urlpatterns = [
     path('add_page/', AddPageCreateView.as_view(), name='add_page'),
     path('contact/', contact, name='contact'),
     path('login/', LoginUserView.as_view(), name='login'),
+    path('logout/', logout_user, name='logout'),
     path('register/', RegisterUserView.as_view(), name='register')
 ]
