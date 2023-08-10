@@ -1,11 +1,12 @@
 from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from .forms import *
-from .models import Woman
+from .models import Woman, Category
 from .utils import DataMixin
 
 
@@ -34,11 +35,11 @@ class HomePageListView(DataMixin, ListView):
         return dict(list(context.items()) + list(c_def.items()))
 
     def get_queryset(self):
-        return Woman.objects.filter(is_published=True)
+        return Woman.objects.filter(is_published=True).select_related("cat")
 
 
 def about(request):
-    data = {'menu': menu, 'title': 'О сайте'}
+    data = {'menu': menu if request.user.is_authenticated else menu[::2], 'title': 'О сайте'}
     return render(request, 'index.html', data)
 
 
@@ -48,13 +49,14 @@ class ShowCategoryListView(DataMixin, ListView):
     context_object_name = 'posts'
 
     def get_queryset(self):
-        return Woman.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True)
+        return Woman.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True).select_related('cat')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        cats = Category.objects.get(slug=self.kwargs['cat_slug'])
         c_def = self.get_user_context(
-            title=f'Категория - {str(context["posts"][0].cat)}',
-            cat_selected=context['posts'][0].cat_id
+            title=f'Категория - {str(cats.name)}',
+            cat_selected=cats.pk
         )
         return dict(list(context.items()) + list(c_def.items()))
 
@@ -120,3 +122,8 @@ class RegisterUserView(DataMixin, CreateView):
             cat_selected=None
         )
         return dict(list(context.items()) + list(c_def.items()))
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
