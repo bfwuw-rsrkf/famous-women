@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, FormView
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -90,8 +90,20 @@ class AddPageCreateView(LoginRequiredMixin, DataMixin, CreateView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-def contact(request):
-    return HttpResponse('Обратная связь')
+class ContactFormView(DataMixin, FormView):
+    form_class = ContactForm
+    template_name = 'contact.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(
+            title='Обратная связь',
+            cat_selected=None
+        )
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def get_success_url(self):
+        return reverse_lazy('index')
 
 
 class LoginUserView(DataMixin, LoginView):
