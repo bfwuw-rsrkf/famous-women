@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # libraries
     'debug_toolbar',
+    'captcha',
     # apps
     'women',
 ]
