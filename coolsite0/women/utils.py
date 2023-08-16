@@ -1,3 +1,4 @@
+from django.db.models import Count
 from .models import *
 
 
@@ -13,7 +14,7 @@ class DataMixin:
 
     def get_user_context(self, **kwargs):
         context = kwargs
-        cats = Category.objects.all()
+        cats = Category.objects.annotate(Count('woman'))
         user_menu = menu.copy()
         if not self.request.user.is_authenticated:
             user_menu.pop(1)
